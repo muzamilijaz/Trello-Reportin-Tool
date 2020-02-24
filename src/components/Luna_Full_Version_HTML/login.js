@@ -44,7 +44,7 @@ export default class Login extends Component {
     render() {
         return (
             <div className="wrapper">
-                <section className="content">
+                <section className="content-s">
                     <div className="container-center animated slideInDown">
                         <div className="view-header">
                             <div className="header-icon">
