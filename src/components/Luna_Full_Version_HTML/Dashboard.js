@@ -1,8 +1,8 @@
 /* eslint-disable no-unused-expressions */
 import React, { Component } from 'react'
 
-const API_KEY = 'f185658707ae3b2d431801916e197bcd';
-const TOKEN = '6b5f1e12474c76bc6b4171ed92f08c27ddc4facd1866015e9c688fc68d51ca40';
+export const API_KEY = 'f185658707ae3b2d431801916e197bcd';
+export const TOKEN = '6b5f1e12474c76bc6b4171ed92f08c27ddc4facd1866015e9c688fc68d51ca40';
 
 export default class Dashboard extends Component {
     constructor(props) {
@@ -63,7 +63,6 @@ export default class Dashboard extends Component {
             .finally(() => this.calculation())
     };
 
-    // making counter info array
     calculation = async () => {
         const arr = [];
         await this.state.listData.array && this.state.listData.array.forEach(ele => {
@@ -75,8 +74,10 @@ export default class Dashboard extends Component {
             })
             arr.push(obj);
         });
-        this.setState({ cardsWithIds: arr })
-        //here
+        this.setState({ cardsWithIds: arr });
+
+
+        // making array of cards counter and person id
         let count = [];
         await this.state.membersData.array && this.state.membersData.array.forEach(person => {
             arr.forEach(card => {
@@ -141,21 +142,38 @@ export default class Dashboard extends Component {
             .catch(console.log)
         // .finally(() => this.cardsAssignedToEachMember())
     }
-
     UpdateDashboardSection = (key, boardName, boardId) => {
         this.fetchMembersOfBoard(boardId);
         this.fetchListWithCardsAgainstBoardId(boardId);
         // this.cardsAssignedToEachMember();
-
         this.setState({
             boardsData: {
                 ...this.state.boardsData,
                 selectedBoardName: boardName,
-                selectedBoardNo: key
+                selectedBoardNo: key,
+                selectedBoardId:boardId
             }
         })
     }
 
+showReports=(item)=>{
+    console.log(this.state.boardsData.selectedBoardId)
+    let boardId =this.state.boardsData.selectedBoardId
+    console.log('item',item)
+
+
+    this.props.history.push({
+        pathname :'/reports',
+        search: `?boardId=${boardId}&memberId=${item.id}`,
+    })
+}
+
+totalCards =count=>{
+    console.log('cccccccccccccccc',count)
+    let cards;
+     cards =count++;
+     return cards
+}
     componentDidMount() {
         this.fetchBoards();
     }
@@ -200,7 +218,6 @@ export default class Dashboard extends Component {
                 </nav>
 
                 <aside className="navigation">
-                    {/* <button onClick={this.calculation}>check</button> */}
                     <nav>
                         <ul className="nav luna-nav">
                             <li className="nav-category">
@@ -240,7 +257,6 @@ export default class Dashboard extends Component {
                                 <hr />
                             </div>
                         </div>
-
                         <div className="row">
                             {!!listData.array && listData.array.map((item, key) => {
                                 return (
@@ -267,6 +283,7 @@ export default class Dashboard extends Component {
                                                 <tr>
                                                     <th>Name</th>
                                                     <th>No of Tasks Assigned</th>
+                                                    <th>Reports</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -275,6 +292,7 @@ export default class Dashboard extends Component {
                                                         <tr>
                                                             <td>{item.fullName}</td>
                                                             <td>{this.getTasks(item)}</td>
+                                                            <td><button onClick={()=>this.showReports(item)}>Get Reports</button></td>
                                                         </tr>
                                                     )
                                                 })}
@@ -284,23 +302,18 @@ export default class Dashboard extends Component {
                                 </div>
                             </div>
                             <div className="col-md-4">
-
                                 <div className="panel panel-b-accent">
                                     <div className="panel-body text-center p-m">
                                         <h2 className="font-light">
                                             Total 43 Cards
                                   </h2>
-
                                         <div className="sparkline7 m-t-xs"></div>
                                     </div>
                                 </div>
                             </div>
-
                         </div>
-
                     </div>
                 </section>
-
             </div>
         )
     }
